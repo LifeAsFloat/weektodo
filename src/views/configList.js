@@ -32,6 +32,12 @@ export default {
               link: "config-data-tab",
             },
             {
+              name: vue.$t('settings.webdav'),
+              ico: "bi-cloud-arrow-up",
+              linktype: "tagId",
+              link: "config-webdav-tab",
+            },
+            {
               name: vue.$t('settings.language'),
               ico: "bi-globe2",
               linktype: "tagId",

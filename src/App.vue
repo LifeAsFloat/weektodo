@@ -247,7 +247,7 @@ export default {
     window.addEventListener("resize", this.weekResetScroll);
     document.onreadystatechange = () => {
       if (document.readyState == "complete") {
-        setTimeout(this.hideSplash, 4500);
+        setTimeout(this.hideSplash, 50); // 极速启动：50ms
       }
     };
 

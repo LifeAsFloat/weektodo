@@ -1,5 +1,5 @@
 {
-  "name": "WeekToDo",
+  "name": "weektodo",
   "version": "2.2.0",
   "private": true,
   "description": "Free and Open Source Minimalist Weekly Planner focused on privacy.",
@@ -13,8 +13,8 @@
     "Minimalist"
   ],
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
@@ -34,37 +34,39 @@
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
     "bootstrap-icons": "^1.10.5",
-    "core-js": "^3.20.1",
-    "cryptocurrency-icons": "^0.17.1",
+    "core-js": "^3.39.0",
+    "cryptocurrency-icons": "^0.18.1",
     "electron-config": "^2.0.0",
-    "is-electron": "^2.2.1",
-    "linkify-string": "^3.0.4",
-    "linkifyjs": "^3.0.5",
+    "is-electron": "^2.2.2",
+    "linkify-string": "^4.1.3",
+    "linkifyjs": "^4.1.3",
     "lodash.uniqueid": "^4.0.1",
-    "markdown-it": "^13.0.1",
-    "moment": "^2.29.1",
-    "rrule": "^2.6.9",
-    "vue": "^3.2.26",
-    "vue-i18n": "^9.1.9",
-    "vue3-datepicker": "^0.2.5",
-    "vuex": "^4.0.2",
-    "webpack": "4.46.0"
+    "markdown-it": "^14.1.0",
+    "moment": "^2.30.1",
+    "rrule": "^2.8.1",
+    "vue": "^3.5.13",
+    "vue-i18n": "^10.0.5",
+    "vue3-datepicker": "^0.4.0",
+    "vuex": "^4.1.0",
+    "webdav": "^5.8.0",
+    "webpack": "^5.97.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.15",
-    "@vue/cli-plugin-eslint": "^4.5.15",
-    "@vue/cli-service": "^4.5.15",
-    "@vue/compiler-sfc": "^3.2.26",
-    "babel-eslint": "^10.1.0",
-    "electron": "^25.0.1",
-    "electron-devtools-installer": "^3.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.20.0",
-    "sass": "^1.69.5",
-    "sass-loader": "^10",
-    "vue-cli-plugin-electron-builder": "~2.0.0-rc.6"
+    "cross-env": "^7.0.3",
+    "@babel/eslint-parser": "^7.25.1",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/compiler-sfc": "^3.5.13",
+    "electron": "^33.2.1",
+    "electron-devtools-installer": "^3.2.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-vue": "^9.30.0",
+    "sass": "^1.83.0",
+    "sass-loader": "^16.0.3",
+    "vue-cli-plugin-electron-builder": "^2.1.1"
   },
   "resolutions": {
-    "vue-cli-plugin-electron-builder/electron-builder": "^23.0.3"
+    "vue-cli-plugin-electron-builder/electron-builder": "^25.1.8"
   }
 }

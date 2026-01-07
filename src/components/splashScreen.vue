@@ -23,6 +23,7 @@
             style="display: inline"
           />
         </div>
+        <!-- 已屏蔽赞助商广告显示
         <div v-show="sponsor" class="d-flex justify-content-center" style="height: 50px">
           <a v-if="sponsor" :href="sponsor.url" class="d-flex sponsor-container align-items-center" target="_blank">
             <img :src="sponsor.img" class="sponsor-img" alt="WeekToDo Sponsor" />
@@ -35,6 +36,7 @@
         <div style="height: 25px; width: 200px" class="d-flex justify-content-center">
           <div v-show="sponsor" class="opacity-25" style="font-size: 0.7rem">{{ $t("ui.sponsoredBy") }}</div>
         </div>
+        -->
       </div>
     </div>
   </transition>
@@ -51,11 +53,12 @@ export default {
     };
   },
   mounted() {
-    const axios = require("axios").default;
-    axios
-      .get("https://weektodo.me/api/sponsors")
-      .then((response) => this.renderSponsor(response))
-      .catch((error) => console.log(error.message));
+    // 已屏蔽赞助商广告加载
+    // const axios = require("axios").default;
+    // axios
+    //   .get("https://weektodo.me/api/sponsors")
+    //   .then((response) => this.renderSponsor(response))
+    //   .catch((error) => console.log(error.message));
   },
   methods: {
     hideSplash: function () {

@@ -39,6 +39,11 @@
               </button>
             </li>
             <li class="nav-item" role="presentation">
+              <button class="nav-link" id="config-webdav-tab" data-bs-toggle="tab" data-bs-target="#config-webdav" role="tab">
+                WebDAV
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
               <button class="nav-link" id="config-language-tab" data-bs-toggle="tab" data-bs-target="#config-language"
                 role="tab">
                 Language
@@ -297,6 +302,93 @@
                 </div>
               </div>
             </div>
+            <div class="tab-pane fade" id="config-webdav">
+              <div class="d-flex flex-column mt-2 h-100">
+                <div class="alert alert-info small mb-3" role="alert">
+                  <i class="bi-info-circle me-1"></i>
+                  <strong>使用提示：</strong>
+                  <ul class="mb-0 mt-1 ps-3">
+                    <li>需要支持 WebDAV 的服务器（如 Nextcloud、坚果云等）</li>
+                    <li>服务器地址示例：https://dav.jianguoyun.com/dav/</li>
+                    <li>部分服务器可能需要在浏览器中允许跨域访问</li>
+                    <li>建议在 Electron 桌面版中使用以获得最佳体验</li>
+                  </ul>
+                </div>
+
+                <div class="form-check form-switch d-flex px-1 mb-3 justify-content-between">
+                  <label class="form-check-label flex-fill" for="webdavEnabled">{{ $t("settings.webdavEnabled") }}</label>
+                  <input class="form-check-input" type="checkbox" id="webdavEnabled" v-model="webdavConfig.enabled"
+                    @change="saveWebdavConfig()" />
+                </div>
+
+                <div class="mb-3">
+                  <label for="webdavUrl" class="form-label">{{ $t("settings.webdavUrl") }}</label>
+                  <input type="text" class="form-control" id="webdavUrl" v-model="webdavConfig.url"
+                    placeholder="https://dav.example.com" @change="saveWebdavConfig()" />
+                </div>
+
+                <div class="mb-3">
+                  <label for="webdavUsername" class="form-label">{{ $t("settings.webdavUsername") }}</label>
+                  <input type="text" class="form-control" id="webdavUsername" v-model="webdavConfig.username"
+                    @change="saveWebdavConfig()" />
+                </div>
+
+                <div class="mb-3">
+                  <label for="webdavPassword" class="form-label">{{ $t("settings.webdavPassword") }}</label>
+                  <input type="password" class="form-control" id="webdavPassword" v-model="webdavConfig.password"
+                    @change="saveWebdavConfig()" />
+                </div>
+
+                <div class="mb-3">
+                  <label for="webdavRemotePath" class="form-label">{{ $t("settings.webdavRemotePath") }}</label>
+                  <input type="text" class="form-control" id="webdavRemotePath" v-model="webdavConfig.remotePath"
+                    placeholder="/weektodo" @change="saveWebdavConfig()" />
+                </div>
+
+                <div class="form-check form-switch d-flex px-1 mb-3 justify-content-between">
+                  <label class="form-check-label flex-fill" for="webdavAutoSync">{{ $t("settings.webdavAutoSync") }}</label>
+                  <input class="form-check-input" type="checkbox" id="webdavAutoSync" v-model="webdavConfig.autoSync"
+                    @change="saveWebdavConfig()" />
+                </div>
+
+                <div class="mb-3" v-if="webdavConfig.autoSync">
+                  <label for="webdavSyncInterval" class="form-label">{{ $t("settings.webdavSyncInterval") }}</label>
+                  <select class="form-select" id="webdavSyncInterval" v-model="webdavConfig.syncInterval" @change="saveWebdavConfig()">
+                    <option :value="5">5 {{ $t("settings.minutes") }}</option>
+                    <option :value="10">10 {{ $t("settings.minutes") }}</option>
+                    <option :value="15">15 {{ $t("settings.minutes") }}</option>
+                    <option :value="30">30 {{ $t("settings.minutes") }}</option>
+                    <option :value="60">1 {{ $t("settings.hour") }}</option>
+                    <option :value="120">2 {{ $t("settings.hours") }}</option>
+                    <option :value="360">6 {{ $t("settings.hours") }}</option>
+                    <option :value="720">12 {{ $t("settings.hours") }}</option>
+                    <option :value="1440">24 {{ $t("settings.hours") }}</option>
+                  </select>
+                </div>
+
+                <div v-if="webdavConfig.lastSync" class="mb-3 text-muted small">
+                  {{ $t("settings.webdavLastSync") }}: {{ formatDate(webdavConfig.lastSync) }}
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                  <button class="btn btn-primary btn-sm flex-fill" @click="testWebdavConnection()">
+                    <i class="bi-check-circle me-1"></i>{{ $t("settings.webdavTestConnection") }}
+                  </button>
+                  <button class="btn btn-success btn-sm flex-fill" @click="syncWebdav()" :disabled="!webdavConfig.enabled">
+                    <i class="bi-arrow-repeat me-1"></i>{{ $t("settings.webdavSync") }}
+                  </button>
+                </div>
+
+                <div class="d-flex gap-2 mt-2">
+                  <button class="btn btn-outline-primary btn-sm flex-fill" @click="uploadToWebdav()" :disabled="!webdavConfig.enabled">
+                    <i class="bi-cloud-upload me-1"></i>{{ $t("settings.webdavUpload") }}
+                  </button>
+                  <button class="btn btn-outline-secondary btn-sm flex-fill" @click="downloadFromWebdav()" :disabled="!webdavConfig.enabled">
+                    <i class="bi-cloud-download me-1"></i>{{ $t("settings.webdavDownload") }}
+                  </button>
+                </div>
+              </div>
+            </div>
             <div class="tab-pane fade" id="config-language">
               <div class="d-flex flex-column mt-2 h-100">
                 <label for="language" class="form-label">{{ $t("settings.language") }}:</label>
@@ -335,12 +427,15 @@
 
 <script>
 import configRepository from "../repositories/configRepository";
+import webdavConfigRepository from "../repositories/webdavConfigRepository";
+import webdavSync from "../helpers/webdavSync";
 import toastMessage from "../components/toastMessage";
 import exportTool from "../helpers/exportTool";
 import linkList from "../components/linkList";
 import configList from "./configList";
 import notifications from "../helpers/notifications";
-import { Modal } from "bootstrap";
+import { Modal, Toast } from "bootstrap";
+import moment from "moment";
 
 export default {
   name: "configModal",
@@ -351,6 +446,7 @@ export default {
   data() {
     return {
       configData: this.$store.getters.config,
+      webdavConfig: webdavConfigRepository.load(),
     };
   },
   methods: {
@@ -431,6 +527,101 @@ export default {
       notifications.playNotificationSound(
         this.$store.getters.config.notificationSound
       );
+    },
+    saveWebdavConfig: function () {
+      const isFirstSync = !this.webdavConfig.lastSync;
+      webdavConfigRepository.update(this.webdavConfig);
+      // 首次连接时自动下载云端数据覆盖本地
+      if (isFirstSync && this.webdavConfig.enabled) {
+        webdavSync.downloadData()
+          .then(() => {
+            this.webdavConfig.lastSync = new Date().toISOString();
+            webdavConfigRepository.update(this.webdavConfig);
+            this.showToast(this.$t("settings.webdavDownloadSuccess"), "success");
+          })
+          .catch((error) => {
+            this.showToast(this.$t("settings.webdavDownloadFailed") + ': ' + (error.message || error), "danger");
+          })
+          .finally(() => {
+            webdavSync.restartAutoSync();
+          });
+      } else {
+        // 非首次连接，正常重启自动同步
+        webdavSync.restartAutoSync();
+      }
+    },
+    async testWebdavConnection() {
+      try {
+        await webdavSync.testConnection();
+        this.showToast(this.$t("settings.webdavConnectionSuccess"), "success");
+      } catch (error) {
+        // 显示详细的错误信息
+        const errorMsg = error.message || this.$t("settings.webdavConnectionFailed");
+        this.showToast(errorMsg, "danger");
+        console.error("WebDAV connection error:", error);
+      }
+    },
+    async uploadToWebdav() {
+      try {
+        await webdavSync.uploadData();
+        this.webdavConfig.lastSync = new Date().toISOString();
+        this.showToast(this.$t("settings.webdavUploadSuccess"), "success");
+      } catch (error) {
+        this.showToast(this.$t("settings.webdavSyncFailed") + ": " + error.message, "danger");
+      }
+    },
+    async downloadFromWebdav() {
+      try {
+        await webdavSync.downloadData();
+        this.webdavConfig.lastSync = new Date().toISOString();
+        this.showToast(this.$t("settings.webdavDownloadSuccess"), "success");
+        // 刷新页面以显示新数据
+        setTimeout(() => window.location.reload(), 1500);
+      } catch (error) {
+        this.showToast(this.$t("settings.webdavSyncFailed") + ": " + error.message, "danger");
+      }
+    },
+    async syncWebdav() {
+      try {
+        await webdavSync.syncData();
+        this.webdavConfig.lastSync = new Date().toISOString();
+        this.showToast(this.$t("settings.webdavSyncSuccess"), "success");
+        // 刷新页面以确保数据最新
+        setTimeout(() => window.location.reload(), 1500);
+      } catch (error) {
+        this.showToast(this.$t("settings.webdavSyncFailed") + ": " + error.message, "danger");
+      }
+    },
+    showToast(message, type = "info") {
+      const toastId = "webdavToast";
+      let toastEl = document.getElementById(toastId);
+      
+      if (!toastEl) {
+        const toastContainer = document.querySelector(".position-fixed.bottom-0.end-0");
+        const newToast = document.createElement("div");
+        newToast.id = toastId;
+        newToast.className = `toast align-items-center text-white bg-${type} border-0`;
+        newToast.setAttribute("role", "alert");
+        newToast.setAttribute("aria-live", "assertive");
+        newToast.setAttribute("aria-atomic", "true");
+        newToast.innerHTML = `
+          <div class="d-flex">
+            <div class="toast-body" style="white-space: pre-wrap; max-width: 400px;">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+          </div>
+        `;
+        toastContainer.appendChild(newToast);
+        toastEl = newToast;
+      } else {
+        toastEl.querySelector(".toast-body").innerHTML = message.replace(/\n/g, '<br>');
+        toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+      }
+      
+      const toast = new Toast(toastEl, { delay: 8000 }); // 增加显示时间到 8 秒
+      toast.show();
+    },
+    formatDate(dateString) {
+      return moment(dateString).format("YYYY-MM-DD HH:mm:ss");
     },
   },
   computed: {

@@ -31,6 +31,8 @@ async function createWindow() {
     webPreferences: {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: false,
+      webSecurity: false, // 禁用 web 安全性以解决 WebDAV CORS 问题
+      allowRunningInsecureContent: true, // 允许不安全的内容以支持 HTTP WebDAV 服务器
     },
   };
 
@@ -73,7 +75,7 @@ async function createWindow() {
   });
 
   mainWindow.on("restore", function () {
-    setTimeout(hideSplashScreen, 4500);
+    setTimeout(hideSplashScreen, 50); // 极速启动
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -100,7 +102,7 @@ if (!gotTheLock) {
     } else {
       createWindow();
     }
-    setTimeout(hideSplashScreen, 5000);
+    setTimeout(hideSplashScreen, 50); // 极速启动
   });
   app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
@@ -228,7 +230,7 @@ function showWindow(window) {
     SplashScreenIsHidden = false;
     setTimeout(function () {
       mainWindow.webContents.send("initial-checks");
-    }, 4000);
+    }, 100); // 极速启动
   }
 }
 
@@ -263,7 +265,7 @@ function createTray() {
       click() {
         if (config.get("isMaximized")) mainWindow.maximize();
         showWindow(mainWindow);
-        setTimeout(hideSplashScreen, 5000);
+        setTimeout(hideSplashScreen, 50); // 极速启动
       },
     },
     {
