@@ -59,11 +59,11 @@
         <li>
           <hr class="dropdown-divider" />
         </li>
-        <li>
+        <!-- <li>
           <a href="https://weektodo.me/support-us" target="_blank" class="dropdown-item" type="button">
             <i class="bi-gift"></i> <span>{{ $t("donate.supportUs") }}</span>
           </a>
-        </li>
+        </li> -->
         <li>
           <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#aboutModal">
             <i class="bi-info-circle"></i> <span>{{ $t("about.about") }}</span>
