@@ -1,257 +1,235 @@
-# WeekToDo | FOSS Minimalist Weekly Planner (Enhanced Fork)
+# WeekToDo | 开源极简主义周计划应用（增强版 Fork）
 ---
 ![GitHub all releases](https://img.shields.io/github/downloads/zuntek/weektodoweb/total) 
 [![vue3](https://img.shields.io/badge/vue-3.x-brightgreen.svg)](https://vuejs.org/)
 [![Docker](https://img.shields.io/badge/docker-available-blue.svg)](https://hub.docker.com/r/lifeasfloat/weektodo)
 
-[简体中文](README.zh-CN.md) | English
+简体中文 | [English](README.en.md)
 
-> **Note:** This is an enhanced fork of the original [WeekToDo](https://github.com/manuelernestog/weektodo) project with additional features and Docker support.
+> **说明：** 这是原始 [WeekToDo](https://github.com/manuelernestog/weektodo) 项目的增强版 fork，添加了额外功能和 Docker 支持。
 
-WeekToDo is a free minimalist weekly planner app focused on privacy. Schedule your tasks and projects with to do lists and a calendar. Available for Windows, Mac, Linux, Docker or online.
+WeekToDo 是一款专注于隐私保护的免费极简周计划应用。通过待办事项列表和日历来安排您的任务和项目。支持 Windows、Mac、Linux、Docker 或在线使用。
 
 ![Logo](https://weektodo.me/weektodo-preview.webp)
 
-## ✨ New Features in This Fork
+## ✨ 本 Fork 新增特性
 
-- **🔄 WebDAV Synchronization** - Sync your tasks across devices using WebDAV
-- **🐳 Docker Support** - Easy deployment with Docker and Docker Compose
-- **🚀 CI/CD Integration** - Automated builds with GitHub Actions
-- **📦 Multi-platform Docker Images** - Support for AMD64 and ARM64 architectures
+- **🔄 WebDAV 同步** - 通过 WebDAV 在多设备间同步任务
+- **🐳 Docker 支持** - 使用 Docker 和 Docker Compose 轻松部署
+- **🚀 CI/CD 集成** - 通过 GitHub Actions 自动构建
+- **📦 多平台 Docker 镜像** - 支持 AMD64 和 ARM64 架构
 
-## Features
+## 功能特性
 
-- Cross platform
-- Light/dark mode toggle
-- Custom To-do Lists
-- Drag and Drop
-- Multi-language
-- Sub-tasks
-- Markdown Support
-- Customizable user interface
-- Local Storage
-- Task Colors
-- Task Time
-- Recurring Tasks
-- Notifications and reminders
-- **🔄 WebDAV Sync** (New!)
+- 跨平台支持
+- 明暗主题切换
+- 自定义待办列表
+- 拖放功能
+- 多语言支持
+- 子任务
+- Markdown 支持
+- 可自定义用户界面
+- 本地存储
+- 任务颜色标记
+- 任务时间
+- 重复任务
+- 通知和提醒
+- **🔄 WebDAV 同步**（新功能！）
 
-## 🐳 Docker Deployment
+## 🐳 Docker 部署
 
-### Quick Start with Docker
+### Docker 快速开始
 
-**Pull and run the latest image:**
+**拉取并运行最新镜像：**
 
 ```bash
 docker pull lifeasfloat/weektodo:latest
 docker run -p 80:80 lifeasfloat/weektodo:latest
 ```
 
-Visit http://localhost
+访问 http://localhost
 
-### Using Docker Compose
+### 使用 Docker Compose
 
-**Development environment:**
+**开发环境：**
 ```bash
 docker-compose up app-dev
 ```
 
-**Production environment:**
+**生产环境：**
 ```bash
 docker-compose up app-prod
 ```
 
 ### Docker Hub
 
-Pre-built images are available on Docker Hub:
-- `lifeasfloat/weektodo:latest` - Latest stable version
-- `lifeasfloat/weektodo:2.x` - Major version tag
-- `lifeasfloat/weektodo:2.x.x` - Specific version
+预构建镜像可在 Docker Hub 获取：
+- `lifeasfloat/weektodo:latest` - 最新稳定版本
+- `lifeasfloat/weektodo:2.x` - 主版本标签
+- `lifeasfloat/weektodo:2.x.x` - 特定版本
 
-Visit our [Docker Hub repository](https://hub.docker.com/r/lifeasfloat/weektodo) for more information.
+访问我们的 [Docker Hub 仓库](https://hub.docker.com/r/lifeasfloat/weektodo) 了解更多信息。
 
 ### GitHub Container Registry
 
-Images are also available on GitHub Container Registry:
+镜像也可在 GitHub Container Registry 获取：
 ```bash
 docker pull ghcr.io/lifeasfloat/weektodo:latest
 ```
 
-## 🔄 WebDAV Synchronization
+## 🔄 WebDAV 同步
 
-### Setup WebDAV Sync
+### 配置 WebDAV 同步
 
-1. Open **Settings** in WeekToDo
-2. Navigate to **Sync Settings**
-3. Enable **WebDAV Synchronization**
-4. Enter your WebDAV server details:
-   - Server URL (e.g., `https://dav.example.com`)
-   - Username
-   - Password
-5. Click **Test Connection** to verify
-6. Enable **Auto Sync** for automatic synchronization
+1. 在 WeekToDo 中打开**设置**
+2. 导航至**同步设置**
+3. 启用 **WebDAV 同步**
+4. 输入您的 WebDAV 服务器详情：
+   - 服务器 URL（例如：`https://dav.example.com`）
+   - 用户名
+   - 密码
+5. 点击**测试连接**进行验证
+6. 启用**自动同步**以实现自动同步
 
-### Supported WebDAV Providers
+### 支持的 WebDAV 提供商
 
 - Nextcloud
 - ownCloud
 - Box
 - 4shared
-- Any standard WebDAV server
+- 任何标准 WebDAV 服务器
 
-### Sync Behavior
+### 同步行为
 
-- **Manual Sync**: Click the sync button to sync immediately
-- **Auto Sync**: Automatically syncs when changes are detected
-- **Conflict Resolution**: Latest changes take priority
-- **Offline Support**: Changes are queued and synced when connection is restored
+- **手动同步**：点击同步按钮立即同步
+- **自动同步**：检测到更改时自动同步
+- **冲突解决**：最新更改优先
+- **离线支持**：更改会排队等待连接恢复后同步
 
-## Roadmap
+## 路线图
 
-- Touch mode
-- Mobile Version
-- ~~Sync across devices~~ ✅ (Implemented via WebDAV)
-- Workspaces
-- Themes
-- End-to-end encryption for WebDAV sync
-- Calendar integration
+- 触摸模式
+- 移动版本
+- ~~跨设备同步~~ ✅（已通过 WebDAV 实现）
+- 工作空间
+- 主题
+- WebDAV 同步的端到端加密
+- 日历集成
 
-## Installation
+## 安装方式
 
-### 🐳 Docker (Recommended)
+### 🐳 Docker（推荐）
 
-**Using Docker Hub:**
+**使用 Docker Hub：**
 ```bash
-# Pull the latest image
+# 拉取最新镜像
 docker pull lifeasfloat/weektodo:latest
 
-# Run the container
+# 运行容器
 docker run -d -p 80:80 --name weektodo lifeasfloat/weektodo:latest
 ```
 
-**Using Docker Compose:**
+**使用 Docker Compose：**
 ```bash
-# Clone the repository
+# 克隆仓库
 git clone https://github.com/LifeAsFloat/weektodo
 cd weektodo
 
-# Run in production mode
+# 生产模式运行
 docker-compose up -d app-prod
 
-# Or run in development mode
+# 或开发模式运行
 docker-compose up -d app-dev
 ```
 
-Visit http://localhost (production) or http://localhost:8080 (development)
+访问 http://localhost（生产环境）或 http://localhost:8080（开发环境）
 
-For more Docker deployment options, see [DOCKER.md](DOCKER.md)
+更多 Docker 部署选项，请参阅 [DOCKER.md](DOCKER.md)
 
-## Build and Run From Source
+## 从源码构建和运行
 
-If you want to understand how WeekToDo works or want to debug an issue, you'll want to get the source, build it, and run it locally.
+如果您想了解 WeekToDo 的工作原理或想要调试问题，您需要获取源码、构建并在本地运行它。
 
-### Installing Prerequisites
+### 安装先决条件
 
-You'll need git, a recent version of [Node.JS](https://nodejs.org/en/) (currently v25.x is recommended), and npm.
+您需要 git、最新版本的 [Node.JS](https://nodejs.org/en/)（目前推荐 v25.x）和 npm。
 
-### Clone and Run
+### 克隆并运行
 
 ```bash
-# Clone this enhanced fork
+# 克隆这个增强版 fork
 git clone https://github.com/LifeAsFloat/weektodo
 cd weektodo
 
-# Install dependencies
+# 安装依赖
 npm install
 
-# Run web version (development)
+# 运行 Web 版本（开发环境）
 npm run serve
 
-# Build for production
+# 构建生产版本
 npm run build
 ```
 
-### Docker Build
+### Docker 构建
 
 ```bash
-# Build production image
+# 构建生产镜像
 docker build -f Dockerfile.prod -t weektodo:prod .
 
-# Build development image
+# 构建开发镜像
 docker build -t weektodo:dev .
 
-# Or use docker-compose
+# 或使用 docker-compose
 docker-compose up --build
 ```
 
-See [DOCKER.md](DOCKER.md) for detailed Docker instructions.
+详细的 Docker 说明请参阅 [DOCKER.md](DOCKER.md)。
 
-## Translations
+## 翻译
 
-Currently the system is developed in multiple languages, you can send me a correction of any error or you can add your language if it's not available.
+目前系统支持多种语言开发，您可以发送任何错误的更正，或者如果您的语言不可用，可以添加您的语言。
 
-You can find the base file with all the used words in english [here](src/assets/languages/en.json/)
+您可以在[这里](src/assets/languages/en.json/)找到包含所有使用单词的英文基础文件
 
-For add a new language Fork the repo and create a Pull Request creating a new file of the `translations/en.json` and name he file acording the [language code](https://gist.github.com/Josantonius/b455e315bc7f790d14b136d61d9ae469). 
+要添加新语言，请 Fork 仓库并创建 Pull Request，创建一个新的 `translations/en.json` 文件副本，并根据[语言代码](https://gist.github.com/Josantonius/b455e315bc7f790d14b136d61d9ae469)命名文件。
 
-If this is to dificult, you can donwload this [file](src/assets/languages/en.json/), translate it and send the file to the email contact@weektodo.me
+如果这太困难，您可以下载这个[文件](src/assets/languages/en.json/)，翻译它并将文件发送到电子邮件 contact@weektodo.me
 
-## Contributing
+## 参与贡献
 
-Weektodo is open-source. Pull requests and contributions are welcome! There are three ways to contribute: grab a [bug report](https://github.com/LifeAsFloat/weektodo/issues?q=is%3Aopen+is%3Aissue+label%3Abug) or [feature suggestion](https://github.com/LifeAsFloat/weektodo/issues?q=is%3Aissue+is%3Aopen+label%3Afeature) that has been marked `accepted` and dig in.
+WeekToDo 是开源的，欢迎提交 Pull Request 和贡献！有三种贡献方式：获取标记为 `accepted` 的[错误报告](https://github.com/LifeAsFloat/weektodo/issues?q=is%3Aopen+is%3Aissue+label%3Abug)或[功能建议](https://github.com/LifeAsFloat/weektodo/issues?q=is%3Aissue+is%3Aopen+label%3Afeature)并深入研究。
 
-Read [Contributing.md](/CONTRIBUTING.md) for more information.
+阅读 [Contributing.md](/CONTRIBUTING.md) 了解更多信息。
 
-### Fork Contributions
+### Fork 贡献
 
-This fork adds:
-- WebDAV synchronization functionality
-- Full Docker support with multi-stage builds
-- GitHub Actions CI/CD for automated builds
-- Enhanced documentation
-- Node.js 25 support
+本 fork 添加了：
+- WebDAV 同步功能
+- 完整的 Docker 支持和多阶段构建
+- 使用 GitHub Actions 的 CI/CD 自动构建
+- 增强的文档
+- Node.js 25 支持
 
-## Original Project
+## 原始项目
 
-This is a fork of the original WeekToDo project:
-- **Original Author:** [Manuel Ernesto Garcia](https://manuelernestogr.bio.link/)
-- **Original Repository:** [manuelernestog/weektodo](https://github.com/manuelernestog/weektodo)
-- **Website:** [weektodo.me](https://weektodo.me)
+这是原始 WeekToDo 项目的 fork：
+- **原作者：** [Manuel Ernesto Garcia](https://manuelernestogr.bio.link/)
+- **原始仓库：** [manuelernestog/weektodo](https://github.com/manuelernestog/weektodo)
+- **网站：** [weektodo.me](https://weektodo.me)
 
-## Fork Maintainer
+## Fork 维护者
 
 - **LifeAsFloat**
-- **Repository:** [LifeAsFloat/weektodo](https://github.com/LifeAsFloat/weektodo)
+- **仓库：** [LifeAsFloat/weektodo](https://github.com/LifeAsFloat/weektodo)
 
-## License
+## 许可证
 
-This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
+本项目采用 GPL-3.0 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件。
 
-## Acknowledgments
+## 致谢
 
-Special thanks to:
-- Manuel Ernesto Garcia for the original WeekToDo project
-- All contributors to the original project
-- The open-source community
-Weektodo is open-source. Pull requests and contributions are welcome! There are three ways to contribute: grab a [bug report](https://github.com/manuelernestog/issues?q=is%3Aopen+is%3Aissue+label%3Abug) or [feature suggestion](https://github.com/manuelernestog/issues?q=is%3Aissue+is%3Aopen+label%3Afeature) that has been marked `accepted` and dig in.
-
-Read [Contributing.md](/CONTRIBUTING.md) for more information.
-
-## Author
-
-- [Manuel Ernesto Garcia](https://manuelernestogr.bio.link/)
-
-## Contributors
-
-- Logo Rebranding by [hallgraph](https://twitter.com/hallgraph)
-- [Translators](https://weektodo.me/about/)
-
-<a href="https://github.com/manuelernestog/weektodo/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=manuelernestog/weektodo" />
-</a>
-
-
-
-Made with [contrib.rocks](https://contrib.rocks).
-
-  
+特别感谢：
+- Manuel Ernesto Garcia 创建的原始 WeekToDo 项目
+- 原始项目的所有贡献者
+- 开源社区
