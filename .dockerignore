@@ -1,2 +1,17 @@
 node_modules
 .git
+npm-debug.log
+yarn-error.log
+.gitignore
+README.md
+.env
+.DS_Store
+dist
+dist_electron
+build
+coverage
+.vscode
+.idea
+*.md
+.github
+
