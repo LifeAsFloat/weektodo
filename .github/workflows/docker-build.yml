@@ -80,12 +80,13 @@ jobs:
           file: ./Dockerfile.prod
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
           no-cache: false
           pull: true
 
-      - name: Image digest
-        run: echo ${{ steps.meta.outputs.digest }}
-      
       - name: Build summary
         run: |
           echo "### 🐳 Docker Build Summary" >> $GITHUB_STEP_SUMMARY
@@ -96,7 +97,6 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Digest:** \`${{ steps.meta.outputs.digest }}\`" >> $GITHUB_STEP_SUMMARY
-          platforms: linux/amd64,linux/arm64
 
       - name: Image digest
         run: echo ${{ steps.meta.outputs.digest }}
