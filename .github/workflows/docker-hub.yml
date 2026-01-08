@@ -9,10 +9,30 @@ on:
 jobs:
   build-and-push-dockerhub:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Validate secrets
+        run: |
+          if [ -z "$DOCKER_USERNAME" ]; then
+            echo "❌ Error: DOCKERHUB_USERNAME secret is not set"
+            echo "📝 Please configure it in: Settings -> Secrets and variables -> Actions"
+            echo "👉 Add secret: DOCKERHUB_USERNAME = your Docker Hub username"
+            exit 1
+          fi
+          if [ -z "$DOCKER_TOKEN" ]; then
+            echo "❌ Error: DOCKERHUB_TOKEN secret is not set"
+            echo "📝 Please configure it in: Settings -> Secrets and variables -> Actions"
+            echo "👉 Add secret: DOCKERHUB_TOKEN = your Docker Hub access token"
+            exit 1
+          fi
+          echo "✅ Secrets validated successfully"
+          echo "📦 Docker Hub username: $DOCKER_USERNAME"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -20,24 +40,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Validate secrets
-        run: |
-          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
-            echo "Error: DOCKERHUB_USERNAME secret is not set"
-            echo "Please configure it in: Settings -> Secrets and variables -> Actions"
-            exit 1
-          fi
-          if [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
-            echo "Error: DOCKERHUB_TOKEN secret is not set"
-            echo "Please configure it in: Settings -> Secrets and variables -> Actions"
-            exit 1
-          fi
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_TOKEN }}
 
       - name: Extract version from tag
         id: version
@@ -46,6 +53,9 @@ jobs:
             VERSION=${GITHUB_REF#refs/tags/v}
             echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
             echo "MAJOR=$(echo $VERSION | cut -d. -f1)" >> $GITHUB_OUTPUT
+            echo "📌 Building version: $VERSION"
+          else
+            echo "⚠️  No version tag found, using 'latest' only"
           fi
 
       - name: Build and push to Docker Hub
@@ -55,9 +65,9 @@ jobs:
           file: ./Dockerfile.prod
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/weektodo:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/weektodo:${{ steps.version.outputs.VERSION }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/weektodo:${{ steps.version.outputs.MAJOR }}
+            ${{ env.DOCKER_USERNAME }}/weektodo:latest
+            ${{ env.DOCKER_USERNAME }}/weektodo:${{ steps.version.outputs.VERSION }}
+            ${{ env.DOCKER_USERNAME }}/weektodo:${{ steps.version.outputs.MAJOR }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
@@ -65,8 +75,8 @@ jobs:
       - name: Update Docker Hub Description
         uses: peter-evans/dockerhub-description@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ secrets.DOCKERHUB_USERNAME }}/weektodo
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_TOKEN }}
+          repository: ${{ env.DOCKER_USERNAME }}/weektodo
           short-description: ${{ github.event.repository.description }}
           readme-filepath: ./README.md
