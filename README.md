@@ -4,7 +4,7 @@
 [![vue3](https://img.shields.io/badge/vue-3.x-brightgreen.svg)](https://vuejs.org/)
 [![Docker](https://img.shields.io/badge/docker-available-blue.svg)](https://hub.docker.com/r/lifeasfloat/weektodo)
 
-English | [简体中文](README.zh-CN.md)
+[简体中文](README.zh-CN.md) | English
 
 > **Note:** This is an enhanced fork of the original [WeekToDo](https://github.com/manuelernestog/weektodo) project with additional features and Docker support.
 
@@ -145,34 +145,6 @@ docker-compose up -d app-dev
 Visit http://localhost (production) or http://localhost:8080 (development)
 
 For more Docker deployment options, see [DOCKER.md](DOCKER.md)
-
-### Download installer 
-
-[Windows / Linux / macOS](https://github.com/zuntek/weektodoweb/releases/latest
-) 
-
-### External Stores
-
-#### Windows 
-
-[Uptodown](https://weektodo.uptodown.com/windows)
-
-#### macOS 
-
-[Macupdate](https://www.macupdate.com/app/mac/63506/weektodo)
-
-#### Linux 
-
-Snapd can be installed from the command line:
-
-```bash
-sudo apt update
-sudo apt install snapd
-```
-To install WeekToDo, simply use the following command:
-```bash
-sudo snap install weektodo
-```    
 
 ## Build and Run From Source
 

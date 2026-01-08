@@ -4,7 +4,7 @@
 [![vue3](https://img.shields.io/badge/vue-3.x-brightgreen.svg)](https://vuejs.org/)
 [![Docker](https://img.shields.io/badge/docker-available-blue.svg)](https://hub.docker.com/r/lifeasfloat/weektodo)
 
-[English](README.md) | 简体中文
+简体中文 | [English](README.md)
 
 > **说明：** 这是原始 [WeekToDo](https://github.com/manuelernestog/weektodo) 项目的增强版 fork，添加了额外功能和 Docker 支持。
 
@@ -145,34 +145,6 @@ docker-compose up -d app-dev
 访问 http://localhost（生产环境）或 http://localhost:8080（开发环境）
 
 更多 Docker 部署选项，请参阅 [DOCKER.md](DOCKER.md)
-
-### 下载安装程序
-
-[Windows / Linux / macOS](https://github.com/zuntek/weektodoweb/releases/latest) 
-
-### 外部商店
-
-#### Windows 
-
-[Uptodown](https://weektodo.uptodown.com/windows)
-
-#### macOS 
-
-[Macupdate](https://www.macupdate.com/app/mac/63506/weektodo)
-
-#### Linux 
-
-可以从命令行安装 Snapd：
-
-```bash
-sudo apt update
-sudo apt install snapd
-```
-
-安装 WeekToDo，只需使用以下命令：
-```bash
-sudo snap install weektodo
-```    
 
 ## 从源码构建和运行
 
