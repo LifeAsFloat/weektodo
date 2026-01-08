@@ -51,14 +51,18 @@ jobs:
         run: |
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
+            MAJOR=$(echo $VERSION | cut -d. -f1)
             echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-            echo "MAJOR=$(echo $VERSION | cut -d. -f1)" >> $GITHUB_OUTPUT
-            echo "📌 Building version: $VERSION"
+            echo "MAJOR=$MAJOR" >> $GITHUB_OUTPUT
+            echo "HAS_VERSION=true" >> $GITHUB_OUTPUT
+            echo "📌 Building version: $VERSION (major: $MAJOR)"
           else
+            echo "HAS_VERSION=false" >> $GITHUB_OUTPUT
             echo "⚠️  No version tag found, using 'latest' only"
           fi
 
-      - name: Build and push to Docker Hub
+      - name: Build and push to Docker Hub (with version)
+        if: steps.version.outputs.HAS_VERSION == 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -68,6 +72,18 @@ jobs:
             ${{ env.DOCKER_USERNAME }}/weektodo:latest
             ${{ env.DOCKER_USERNAME }}/weektodo:${{ steps.version.outputs.VERSION }}
             ${{ env.DOCKER_USERNAME }}/weektodo:${{ steps.version.outputs.MAJOR }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: Build and push to Docker Hub (latest only)
+        if: steps.version.outputs.HAS_VERSION == 'false'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.prod
+          push: true
+          tags: ${{ env.DOCKER_USERNAME }}/weektodo:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
