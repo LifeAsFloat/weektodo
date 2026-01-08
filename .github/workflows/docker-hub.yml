@@ -2,6 +2,9 @@ name: Build and Push to Docker Hub
 
 on:
   push:
+    branches:
+      - main
+      - master
     tags:
       - 'v*'
   workflow_dispatch:
@@ -16,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Validate secrets
         run: |
@@ -73,8 +78,8 @@ jobs:
             ${{ env.DOCKER_USERNAME }}/weektodo:${{ steps.version.outputs.VERSION }}
             ${{ env.DOCKER_USERNAME }}/weektodo:${{ steps.version.outputs.MAJOR }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
+          pull: true
+          no-cache: false
 
       - name: Build and push to Docker Hub (latest only)
         if: steps.version.outputs.HAS_VERSION == 'false'
@@ -85,6 +90,28 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_USERNAME }}/weektodo:latest
           cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+          pull: true
+          no-cache: false
+
+      - name: Build summary
+        if: always()
+        run: |
+          echo "### 🐳 Docker Hub Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** \`${{ env.DOCKER_USERNAME }}/weektodo\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.version.outputs.HAS_VERSION }}" == "true" ]; then
+            echo "**Tags:** \`latest\`, \`${{ steps.version.outputs.VERSION }}\`, \`${{ steps.version.outputs.MAJOR }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Tags:** \`latest\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Pull command:**" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.DOCKER_USERNAME }}/weektodo:latest" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
 
