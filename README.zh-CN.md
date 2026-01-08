@@ -271,18 +271,6 @@ WeekToDo 是开源的，欢迎提交 Pull Request 和贡献！有三种贡献方
 - **LifeAsFloat**
 - **仓库：** [LifeAsFloat/weektodo](https://github.com/LifeAsFloat/weektodo)
 
-## 贡献者
-
-- Logo 重新设计由 [hallgraph](https://twitter.com/hallgraph) 完成
-- [翻译人员](https://weektodo.me/about/)
-- WebDAV 集成贡献者
-
-<a href="https://github.com/LifeAsFloat/weektodo/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=LifeAsFloat/weektodo" />
-</a>
-
-由 [contrib.rocks](https://contrib.rocks) 制作。
-
 ## 许可证
 
 本项目采用 GPL-3.0 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件。

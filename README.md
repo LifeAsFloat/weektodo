@@ -251,18 +251,6 @@ This is a fork of the original WeekToDo project:
 - **LifeAsFloat**
 - **Repository:** [LifeAsFloat/weektodo](https://github.com/LifeAsFloat/weektodo)
 
-## Contributors
-
-- Logo Rebranding by [hallgraph](https://twitter.com/hallgraph)
-- [Translators](https://weektodo.me/about/)
-- WebDAV integration contributors
-
-<a href="https://github.com/LifeAsFloat/weektodo/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=LifeAsFloat/weektodo" />
-</a>
-
-Made with [contrib.rocks](https://contrib.rocks).
-
 ## License
 
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
