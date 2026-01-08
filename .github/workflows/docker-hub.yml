@@ -42,9 +42,9 @@ jobs:
           file: ./Dockerfile.prod
           push: true
           tags: |
-            ${{ secrets.DOCKERHUBUSERNAME }}/weektodo:latest
-            ${{ secrets.DOCKERHUBUSERNAME }}/weektodo:${{ steps.version.outputs.VERSION }}
-            ${{ secrets.DOCKERHUBUSERNAME }}/weektodo:${{ steps.version.outputs.MAJOR }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/weektodo:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/weektodo:${{ steps.version.outputs.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/weektodo:${{ steps.version.outputs.MAJOR }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
@@ -52,8 +52,8 @@ jobs:
       - name: Update Docker Hub Description
         uses: peter-evans/dockerhub-description@v4
         with:
-          username: ${{ secrets.DOCKERHUBUSERNAME }}
-          password: ${{ secrets.DOCKERHUBTOKEN }}
-          repository: ${{ secrets.DOCKERHUBUSERNAME }}/weektodo
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ secrets.DOCKERHUB_USERNAME }}/weektodo
           short-description: ${{ github.event.repository.description }}
           readme-filepath: ./README.md
