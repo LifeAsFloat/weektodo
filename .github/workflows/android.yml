@@ -1,0 +1,78 @@
+name: Build Android App
+
+on:
+  push:
+    tags:
+      - 'v*-android'
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Capacitor (if not already installed)
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "WeekToDo" "me.weektodo.app" --web-dir=dist
+
+      - name: Build Web App
+        run: npm run build
+
+      - name: Initialize Capacitor Android
+        run: |
+          npx cap add android || echo "Android platform already added"
+          npx cap sync android
+
+      - name: Build Android APK (Debug)
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
+
+      - name: Build Android APK (Release)
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          cd android
+          ./gradlew assembleRelease
+        continue-on-error: true
+
+      - name: Upload APK Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: |
+            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: warn
+
+      - name: Release APK
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: |
+            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
