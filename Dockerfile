@@ -1,8 +1,7 @@
-FROM node:16-alpine
+FROM node:25-alpine
 WORKDIR /app
-COPY package.json /app
-COPY yarn.lock /app
-RUN yarn install --frozen-lockfile && yarn cache clean
+COPY package.json package-lock.json /app/
+RUN npm ci --legacy-peer-deps
 COPY . /app
-CMD yarn run serve
+CMD npm run serve
 EXPOSE 8080
