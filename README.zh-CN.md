@@ -214,27 +214,7 @@ docker-compose up --build
 
 详细的 Docker 说明请参阅 [DOCKER.md](DOCKER.md)。
 
-## 贡献
-
-您可以通过以下几种方式支持这个项目：
-
-### 捐赠
-
-https://weektodo.me/support-us
-
-### 分享
-
-- [Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fweektodo.me%2F)
-- [Twitter](https://twitter.com/intent/tweet?url=https%3A%2F%2Fweektodo.me%2F&text=)
-- [Linkedin](https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fweektodo.me%2F&title=)
-
-### 为应用评分
-
-- [ProductHunt](https://www.producthunt.com/posts/weektodo)
-- [AlternativeTo](https://alternativeto.net/software/weektodo/about/)
-- [SassHub](https://www.saashub.com/weektodo-reviews/new)
-
-### 翻译
+## 翻译
 
 目前系统支持多种语言开发，您可以发送任何错误的更正，或者如果您的语言不可用，可以添加您的语言。
 

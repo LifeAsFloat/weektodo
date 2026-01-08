@@ -214,19 +214,19 @@ docker-compose up --build
 
 See [DOCKER.md](DOCKER.md) for detailed Docker instructions.
 
+## Translations
+
+Currently the system is developed in multiple languages, you can send me a correction of any error or you can add your language if it's not available.
+
+You can find the base file with all the used words in english [here](src/assets/languages/en.json/)
+
+For add a new language Fork the repo and create a Pull Request creating a new file of the `translations/en.json` and name he file acording the [language code](https://gist.github.com/Josantonius/b455e315bc7f790d14b136d61d9ae469). 
+
+If this is to dificult, you can donwload this [file](src/assets/languages/en.json/), translate it and send the file to the email contact@weektodo.me
+
 ## Contributing
 
-You can support this project in several ways:
-
-### Donate
-
-https://weektodo.me/support-us
-
-### Share
-
-- [Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fweektodo.me%2F)
-- [Twitter](https://twitter.com/intent/tweet?url=https%3A%2F%2Fweektodo.me%2F&text=)
-- [Linkedin](https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fweektodo.me%2F&title=)你的用户名/weektodo/issues?q=is%3Aopen+is%3Aissue+label%3Abug) or [feature suggestion](https://github.com/你的用户名/weektodo/issues?q=is%3Aissue+is%3Aopen+label%3Afeature) that has been marked `accepted` and dig in.
+Weektodo is open-source. Pull requests and contributions are welcome! There are three ways to contribute: grab a [bug report](https://github.com/LifeAsFloat/weektodo/issues?q=is%3Aopen+is%3Aissue+label%3Abug) or [feature suggestion](https://github.com/LifeAsFloat/weektodo/issues?q=is%3Aissue+is%3Aopen+label%3Afeature) that has been marked `accepted` and dig in.
 
 Read [Contributing.md](/CONTRIBUTING.md) for more information.
 
