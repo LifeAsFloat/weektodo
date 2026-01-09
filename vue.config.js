@@ -9,18 +9,14 @@ module.exports = {
       devServer.app.use('/webdav-proxy', (req, res) => {
         try {
           // 从 URL 中提取编码的目标地址
-          // 格式: /webdav-proxy/ENCODED_BASE_URL/path
-          const urlPath = req.url;
-          const firstSlash = urlPath.indexOf('/', 1);
+          // 格式: /webdav-proxy/ENCODED_FULL_URL
+          const urlPath = req.url.startsWith('/') ? req.url.substring(1) : req.url;
+          const pathParts = urlPath.split('/');
           
-          let targetBase, restPath;
-          if (firstSlash > 0) {
-            targetBase = decodeURIComponent(urlPath.substring(1, firstSlash));
-            restPath = urlPath.substring(firstSlash);
-          } else {
-            targetBase = decodeURIComponent(urlPath.substring(1));
-            restPath = '/';
-          }
+          // 第一部分是编码的基础 URL
+          const targetBase = decodeURIComponent(pathParts[0]);
+          // 剩余部分是路径
+          const restPath = '/' + pathParts.slice(1).join('/');
           
           const targetUrl = targetBase + restPath;
           const parsedUrl = url.parse(targetUrl);
