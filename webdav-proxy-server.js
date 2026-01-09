@@ -33,10 +33,11 @@ app.use((req, res, next) => {
  * 路径格式: /webdav-proxy/:encodedUrl
  * encodedUrl 是经过 encodeURIComponent 编码的完整 WebDAV URL
  */
-app.all('/webdav-proxy/:encodedUrl(*)', async (req, res) => {
+app.all('/webdav-proxy/*', async (req, res) => {
   try {
-    // 解析目标 URL
-    const pathParts = req.params.encodedUrl.split('/');
+    // 解析目标 URL - 从路径中提取
+    const fullPath = req.path.replace('/webdav-proxy/', '');
+    const pathParts = fullPath.split('/');
     const targetBaseUrl = decodeURIComponent(pathParts[0]);
     const restPath = '/' + pathParts.slice(1).join('/');
     const targetUrl = targetBaseUrl + restPath;
