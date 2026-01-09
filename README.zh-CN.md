@@ -87,12 +87,38 @@ docker pull ghcr.io/lifeasfloat/weektodo:latest
 4. 输入您的 WebDAV 服务器详情：
    - 服务器 URL（例如：`https://dav.example.com`）
    - 用户名
-   - 密码
+   - 密码（坚果云需使用**应用密码**）
 5. 点击**测试连接**进行验证
 6. 启用**自动同步**以实现自动同步
 
+### 浏览器环境中使用 WebDAV
+
+在浏览器生产环境中，由于 CORS 跨域限制，需要使用代理服务器。
+
+**方案 1：使用 Electron 桌面版（推荐）**
+- Electron 桌面版无 CORS 限制，可直接连接 WebDAV
+
+**方案 2：独立代理服务器**
+
+快速启动本地代理：
+```bash
+# 安装依赖
+npm run proxy:install
+
+# 启动代理服务器
+npm run proxy
+```
+
+在 WeekToDo 设置中：
+1. 启用 **使用代理服务器**
+2. 代理地址填写：`http://localhost:3001/webdav-proxy`
+3. WebDAV URL 照常填写原始地址
+
+📖 详细部署指南（含云平台部署）：[WEBDAV_PROXY_GUIDE.md](WEBDAV_PROXY_GUIDE.md)
+
 ### 支持的 WebDAV 提供商
 
+- [坚果云](https://www.jianguoyun.com/)（推荐，国内访问速度快）
 - Nextcloud
 - ownCloud
 - Box

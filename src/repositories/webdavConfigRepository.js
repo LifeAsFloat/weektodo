@@ -21,6 +21,8 @@ export default {
       autoSync: false,
       syncInterval: 30, // 自动同步间隔（分钟）
       lastSync: null,
+      useProxy: false, // 是否使用代理（用于浏览器生产环境）
+      proxyUrl: "", // 代理服务器地址
     };
   },
 

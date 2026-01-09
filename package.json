@@ -21,7 +21,9 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "release": "electron-builder",
-    "test": "echo success"
+    "test": "echo success",
+    "proxy": "node webdav-proxy-server.js",
+    "proxy:install": "npm install express cors axios"
   },
   "main": "background.js",
   "repository": "https://github.com/manuelernestog/weektodo",

@@ -304,13 +304,21 @@
             </div>
             <div class="tab-pane fade" id="config-webdav">
               <div class="d-flex flex-column mt-2 h-100">
+                <!-- 浏览器环境提示 -->
+                <div v-if="isInBrowserProduction" class="alert alert-info small mb-3" role="alert">
+                  <i class="bi-info-circle me-1"></i>
+                  <strong>💡 浏览器环境提示：</strong>
+                  <p class="mb-1 mt-2">由于浏览器的CORS安全策略，需要通过代理服务器访问WebDAV。</p>
+                  <p class="mb-0"><strong>请配置代理服务器</strong>，或使用Electron桌面版（无限制）。</p>
+                </div>
+                
                 <div class="alert alert-info small mb-3" role="alert">
                   <i class="bi-info-circle me-1"></i>
                   <strong>使用提示：</strong>
                   <ul class="mb-0 mt-1 ps-3">
                     <li>需要支持 WebDAV 的服务器（如 Nextcloud、坚果云等）</li>
                     <li>服务器地址示例：https://dav.jianguoyun.com/dav/</li>
-                    <li>部分服务器可能需要在浏览器中允许跨域访问</li>
+                    <li>坚果云需要使用<strong>应用密码</strong>而非登录密码</li>
                     <li>建议在 Electron 桌面版中使用以获得最佳体验</li>
                   </ul>
                 </div>
@@ -343,6 +351,30 @@
                   <label for="webdavRemotePath" class="form-label">{{ $t("settings.webdavRemotePath") }}</label>
                   <input type="text" class="form-control" id="webdavRemotePath" v-model="webdavConfig.remotePath"
                     placeholder="/weektodo" @change="saveWebdavConfig()" />
+                </div>
+
+                <!-- 代理服务器配置 -->
+                <div class="border rounded p-3 mb-3 bg-light" :class="{'bg-dark': isDarkTheme}">
+                  <div class="form-check form-switch d-flex px-1 mb-2 justify-content-between">
+                    <label class="form-check-label flex-fill" for="webdavUseProxy">
+                      <i class="bi-shield-check me-1"></i>使用代理服务器
+                      <small class="text-muted d-block">（浏览器环境推荐）</small>
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="webdavUseProxy" v-model="webdavConfig.useProxy"
+                      @change="saveWebdavConfig()" />
+                  </div>
+                  
+                  <div v-if="webdavConfig.useProxy" class="mt-2">
+                    <label for="webdavProxyUrl" class="form-label small">代理服务器地址</label>
+                    <input type="text" class="form-control form-control-sm" id="webdavProxyUrl" 
+                      v-model="webdavConfig.proxyUrl"
+                      placeholder="https://your-proxy.example.com/webdav-proxy" 
+                      @change="saveWebdavConfig()" />
+                    <small class="text-muted">
+                      代理服务器将接收编码后的目标URL。示例：<br>
+                      <code>https://proxy.com/webdav-proxy/ENCODED_URL</code>
+                    </small>
+                  </div>
                 </div>
 
                 <div class="form-check form-switch d-flex px-1 mb-3 justify-content-between">
@@ -627,6 +659,21 @@ export default {
   computed: {
     configLinks: function () {
       return configList.configList(this);
+    },
+    isInBrowserProduction() {
+      try {
+        // 检查是否在 Electron 环境中
+        const isElectron = window.process?.type === 'renderer' || 
+                          window.process?.versions?.electron ||
+                          navigator.userAgent.toLowerCase().includes('electron');
+        const isProduction = process.env.NODE_ENV === 'production';
+        return !isElectron && isProduction;
+      } catch {
+        return process.env.NODE_ENV === 'production';
+      }
+    },
+    isDarkTheme() {
+      return this.configData.theme === 'dark';
     },
     watch: {
       configProp: function (newVal) {

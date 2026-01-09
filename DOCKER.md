@@ -22,6 +22,8 @@ docker-compose up app-prod
 
 访问: http://localhost
 
+**WebDAV 支持**: 如需使用 WebDAV，请参考 [WEBDAV_BROWSER_GUIDE.md](WEBDAV_BROWSER_GUIDE.md)
+
 ## Docker 命令
 
 ### 构建镜像

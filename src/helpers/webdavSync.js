@@ -132,16 +132,28 @@ class WebDAVSync {
         let webdavUrl = this.config.url;
         const inBrowser = this.isInBrowser();
         
-        if (inBrowser && process.env.NODE_ENV === 'development') {
-          // 浏览器开发模式：使用代理
-          // 将完整的 WebDAV URL 编码后作为代理路径的一部分
-          const encodedUrl = encodeURIComponent(this.config.url);
-          webdavUrl = `${window.location.origin}/webdav-proxy/${encodedUrl}`;
-          console.log(`🔧 浏览器开发模式: 使用代理`);
-          console.log(`   目标服务器:`, this.config.url);
-          console.log(`   代理地址:`, webdavUrl);
-        } else if (inBrowser && process.env.NODE_ENV === 'production') {
-          console.warn(`⚠️ ${this.t('webdavProductionWarning')}`);
+        // 浏览器环境处理
+        if (inBrowser) {
+          // 优先使用用户配置的代理
+          if (this.config.useProxy && this.config.proxyUrl) {
+            // 用户自定义代理：将目标URL编码后附加到代理URL
+            const encodedUrl = encodeURIComponent(this.config.url);
+            webdavUrl = `${this.config.proxyUrl}/${encodedUrl}`;
+            console.log(`🔧 使用自定义代理服务器`);
+            console.log(`   目标服务器:`, this.config.url);
+            console.log(`   代理地址:`, webdavUrl);
+          } else if (process.env.NODE_ENV === 'development') {
+            // 开发模式：使用本地开发代理
+            const encodedUrl = encodeURIComponent(this.config.url);
+            webdavUrl = `${window.location.origin}/webdav-proxy/${encodedUrl}`;
+            console.log(`🔧 浏览器开发模式: 使用本地代理`);
+            console.log(`   目标服务器:`, this.config.url);
+            console.log(`   代理地址:`, webdavUrl);
+          } else {
+            // 生产环境且未配置代理
+            console.warn(`⚠️ 浏览器生产环境: 直接连接可能遇到 CORS 限制`);
+            console.warn(`   建议: 配置代理服务器或使用 Electron 桌面版`);
+          }
         }
 
         // 创建 WebDAV 客户端
@@ -186,7 +198,12 @@ class WebDAVSync {
       // 提供更详细的错误信息
       let errorMessage = error.message || "Unknown error";
       
-      if (error.message && error.message.includes("Failed to fetch")) {
+      // 检测 CORS 错误
+      if (error.message && (error.message.includes("CORS") || 
+                           error.message.includes("blocked by CORS policy") ||
+                           error.message.includes("Access-Control-Allow-Origin"))) {
+        errorMessage = this.t("webdavProductionWarning");
+      } else if (error.message && error.message.includes("Failed to fetch")) {
         errorMessage = this.t("webdavErrorFailedToFetch");
       } else if (error.status === 401) {
         errorMessage = this.t("webdavError401");
