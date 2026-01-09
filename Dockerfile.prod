@@ -19,8 +19,8 @@ RUN npx vue-cli-service build
 # 第二阶段：运行应用（Nginx + Node.js 代理服务器）
 FROM node:25-alpine as production-stage
 
-# 安装 nginx 和其他必要工具
-RUN apk add --no-cache nginx supervisor
+# 安装 nginx
+RUN apk add --no-cache nginx
 
 # 创建 nginx 运行目录
 RUN mkdir -p /run/nginx
@@ -40,10 +40,7 @@ RUN npm install express cors axios
 # 复制代理服务器代码
 COPY webdav-proxy-server.js ./
 
-# 复制 supervisor 配置
-COPY docker-start.conf /etc/supervisor/conf.d/weektodo.conf
-
-# 创建启动脚本
+# 复制启动脚本
 COPY docker-start.sh /docker-start.sh
 RUN chmod +x /docker-start.sh
 
