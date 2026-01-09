@@ -38,23 +38,44 @@ app.all(/^\/webdav-proxy\/(.*)$/, async (req, res) => {
     // 解析目标 URL - 从路径中提取
     const fullPath = req.params[0]; // 使用正则表达式捕获组
     
-    // 找到第一个编码的 URL（到下一个未编码的斜杠为止）
-    const firstSlashIndex = fullPath.indexOf('/');
-    let targetBaseUrl, restPath;
+    let targetUrl;
     
-    if (firstSlashIndex === -1) {
-      // 没有额外路径，整个就是编码的 URL
-      targetBaseUrl = decodeURIComponent(fullPath);
-      restPath = '';
-    } else {
-      // 有额外路径
-      targetBaseUrl = decodeURIComponent(fullPath.substring(0, firstSlashIndex));
-      restPath = fullPath.substring(firstSlashIndex);
+    // 尝试解析 URL（处理各种编码情况）
+    // 情况1: 路径以 http:/ 或 https:/ 开头（单斜杠，说明已经过某种处理）
+    if (fullPath.match(/^https?:\//)) {
+      // 修复缺失的斜杠
+      targetUrl = fullPath.replace(/^(https?:)\/([^/])/, '$1//$2');
+      console.log(`  → 修复 URL: ${fullPath} => ${targetUrl}`);
+    } 
+    // 情况2: 路径以完整的协议开头
+    else if (fullPath.match(/^https?:\/\//)) {
+      targetUrl = fullPath;
+    }
+    // 情况3: 编码的 URL
+    else {
+      // 找到第一个编码的 URL（到下一个未编码的斜杠为止）
+      const firstSlashIndex = fullPath.indexOf('/');
+      let targetBaseUrl, restPath;
+      
+      if (firstSlashIndex === -1) {
+        // 没有额外路径，整个就是编码的 URL
+        targetBaseUrl = decodeURIComponent(fullPath);
+        restPath = '';
+      } else {
+        // 有额外路径
+        targetBaseUrl = decodeURIComponent(fullPath.substring(0, firstSlashIndex));
+        restPath = fullPath.substring(firstSlashIndex);
+      }
+      
+      targetUrl = targetBaseUrl + restPath;
     }
     
-    const targetUrl = targetBaseUrl + restPath;
-    
     console.log(`  → 代理到: ${targetUrl}`);
+    
+    // 验证 URL 格式
+    if (!targetUrl.match(/^https?:\/\/.+/)) {
+      throw new Error(`Invalid URL format: ${targetUrl}`);
+    }
     
     // 准备请求配置
     const config = {
@@ -71,7 +92,8 @@ app.all(/^\/webdav-proxy\/(.*)$/, async (req, res) => {
     };
     
     // 修正 Host 头
-    const targetHost = new URL(targetBaseUrl).host;
+    const targetUrlObj = new URL(targetUrl);
+    const targetHost = targetUrlObj.host;
     config.headers['host'] = targetHost;
     
     // 删除可能导致问题的头
