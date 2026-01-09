@@ -30,10 +30,12 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      # 如果需要直接访问代理服务器，可以取消注释下面一行
+      # - "3001:3001"
     environment:
       - NODE_ENV=production
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
       interval: 1m30s
       timeout: 10s
       retries: 3

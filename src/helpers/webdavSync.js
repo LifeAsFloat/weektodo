@@ -150,9 +150,13 @@ class WebDAVSync {
             console.log(`   目标服务器:`, this.config.url);
             console.log(`   代理地址:`, webdavUrl);
           } else {
-            // 生产环境且未配置代理
-            console.warn(`⚠️ 浏览器生产环境: 直接连接可能遇到 CORS 限制`);
-            console.warn(`   建议: 配置代理服务器或使用 Electron 桌面版`);
+            // 生产环境：自动使用内置代理（Docker 镜像内置）
+            const encodedUrl = encodeURIComponent(this.config.url);
+            webdavUrl = `${window.location.origin}/webdav-proxy/${encodedUrl}`;
+            console.log(`🔧 浏览器生产环境: 使用内置代理`);
+            console.log(`   目标服务器:`, this.config.url);
+            console.log(`   代理地址:`, webdavUrl);
+            console.log(`   提示: 如需使用外部代理，请在设置中配置代理服务器`);
           }
         }
 
