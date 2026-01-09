@@ -37,9 +37,21 @@ app.all(/^\/webdav-proxy\/(.*)$/, async (req, res) => {
   try {
     // 解析目标 URL - 从路径中提取
     const fullPath = req.params[0]; // 使用正则表达式捕获组
-    const pathParts = fullPath.split('/');
-    const targetBaseUrl = decodeURIComponent(pathParts[0]);
-    const restPath = '/' + pathParts.slice(1).join('/');
+    
+    // 找到第一个编码的 URL（到下一个未编码的斜杠为止）
+    const firstSlashIndex = fullPath.indexOf('/');
+    let targetBaseUrl, restPath;
+    
+    if (firstSlashIndex === -1) {
+      // 没有额外路径，整个就是编码的 URL
+      targetBaseUrl = decodeURIComponent(fullPath);
+      restPath = '';
+    } else {
+      // 有额外路径
+      targetBaseUrl = decodeURIComponent(fullPath.substring(0, firstSlashIndex));
+      restPath = fullPath.substring(firstSlashIndex);
+    }
+    
     const targetUrl = targetBaseUrl + restPath;
     
     console.log(`  → 代理到: ${targetUrl}`);
