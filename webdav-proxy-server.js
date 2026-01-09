@@ -33,10 +33,10 @@ app.use((req, res, next) => {
  * 路径格式: /webdav-proxy/:encodedUrl
  * encodedUrl 是经过 encodeURIComponent 编码的完整 WebDAV URL
  */
-app.all('/webdav-proxy/*', async (req, res) => {
+app.all(/^\/webdav-proxy\/(.*)$/, async (req, res) => {
   try {
     // 解析目标 URL - 从路径中提取
-    const fullPath = req.path.replace('/webdav-proxy/', '');
+    const fullPath = req.params[0]; // 使用正则表达式捕获组
     const pathParts = fullPath.split('/');
     const targetBaseUrl = decodeURIComponent(pathParts[0]);
     const restPath = '/' + pathParts.slice(1).join('/');
@@ -110,7 +110,7 @@ app.all('/webdav-proxy/*', async (req, res) => {
  * OPTIONS 预检请求处理
  * 浏览器在发送实际请求前会先发送 OPTIONS 请求检查权限
  */
-app.options('/webdav-proxy/*', (req, res) => {
+app.options(/^\/webdav-proxy\//, (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PROPFIND, MKCOL, COPY, MOVE');
   res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Depth, Content-Length, Overwrite, Destination');
