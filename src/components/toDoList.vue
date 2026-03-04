@@ -1,6 +1,6 @@
 <template>
   <div :id="'list' + id" class="to-do-list-container d-flex flex-column" ref="listContainer" :class="{
-    'old-date': !customTodoList && moments(id).isBefore(Date(), 'day'),
+    'old-date': !customTodoList && moments(id).isBefore(moment().toISOString(), 'day'),
   }" :style="`flex: 0 0 ${100 / columns}%;`">
     <div v-if="loading" class="loading-spinner">
       <div class="spinner-border" role="status">

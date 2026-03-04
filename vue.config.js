@@ -1,27 +1,42 @@
-const http = require('http');
-const https = require('https');
-const url = require('url');
-
-module.exports = {
-  devServer: {
-    setupMiddlewares: (middlewares, devServer) => {
       // 自定义 WebDAV 代理中间件
       devServer.app.use('/webdav-proxy', (req, res) => {
         try {
           // 从 URL 中提取编码的目标地址
-          // 格式: /webdav-proxy/ENCODED_FULL_URL
+          // 格式：/webdav-proxy/ENCODED_FULL_URL
           const urlPath = req.url.startsWith('/') ? req.url.substring(1) : req.url;
+          
+          console.log('🔀 收到代理请求:', req.method, req.url);
+          
+          if (!urlPath || urlPath === '') {
+            throw new Error('缺少目标 URL');
+          }
+          
           const pathParts = urlPath.split('/');
           
           // 第一部分是编码的基础 URL
-          const targetBase = decodeURIComponent(pathParts[0]);
+          let targetBase;
+          try {
+            targetBase = decodeURIComponent(pathParts[0]);
+          } catch (decodeErr) {
+            console.error('🔀 URL 解码失败:', decodeErr.message, '原始部分:', pathParts[0]);
+            throw new Error('URL 解码失败：' + decodeErr.message);
+          }
+          
           // 剩余部分是路径
-          const restPath = '/' + pathParts.slice(1).join('/');
+          const restPath = pathParts.length > 1 ? '/' + pathParts.slice(1).join('/') : '';
           
           const targetUrl = targetBase + restPath;
-          const parsedUrl = url.parse(targetUrl);
           
-          console.log('🔀 WebDAV 代理:', req.method, targetUrl);
+          console.log('🔀 解析后的目标 URL:', targetUrl);
+          console.log('   基础 URL:', targetBase);
+          console.log('   路径:', restPath);
+          
+          // 验证 URL 格式
+          if (!targetUrl.match(/^https?:\/\//)) {
+            throw new Error('无效的 URL 格式：' + targetUrl);
+          }
+          
+          const parsedUrl = url.parse(targetUrl);
           
           const options = {
             hostname: parsedUrl.hostname,
@@ -30,27 +45,29 @@ module.exports = {
             method: req.method,
             headers: {
               ...req.headers,
-              host: parsedUrl.host,
             },
           };
           
           // 清理一些头
           delete options.headers['origin'];
           delete options.headers['referer'];
-          delete options.headers['host'];
+          delete options.headers['connection'];
           options.headers['host'] = parsedUrl.host;
+          
+          console.log('🔀 转发请求到:', targetUrl);
           
           const httpModule = parsedUrl.protocol === 'https:' ? https : http;
           
           const proxyReq = httpModule.request(options, (proxyRes) => {
             console.log('🔀 代理响应:', proxyRes.statusCode, req.method, restPath);
             
-            // 设置响应头
+            // 设置响应头，添加 CORS 支持
             const responseHeaders = { ...proxyRes.headers };
             responseHeaders['access-control-allow-origin'] = '*';
             responseHeaders['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PROPFIND, MKCOL, COPY, MOVE';
             responseHeaders['access-control-allow-headers'] = 'Authorization, Content-Type, Depth, Content-Length, Overwrite, Destination';
             delete responseHeaders['www-authenticate'];
+            delete responseHeaders['connection'];
             
             res.writeHead(proxyRes.statusCode, responseHeaders);
             proxyRes.pipe(res);
@@ -58,66 +75,36 @@ module.exports = {
           
           proxyReq.on('error', (err) => {
             console.error('🔀 代理错误:', err.message);
-            res.writeHead(502, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: err.message }));
+            console.error('   目标 URL:', targetUrl);
+            res.writeHead(502, { 
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            });
+            res.end(JSON.stringify({ 
+              error: '代理请求失败',
+              message: err.message,
+              target: targetUrl,
+            }));
           });
           
           // 转发请求体
-          req.pipe(proxyReq);
+          if (req.method !== 'GET' && req.method !== 'HEAD') {
+            req.pipe(proxyReq);
+          } else {
+            proxyReq.end();
+          }
           
         } catch (err) {
           console.error('🔀 代理处理错误:', err.message);
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: err.message }));
+          console.error('   堆栈:', err.stack);
+          res.writeHead(500, { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          });
+          res.end(JSON.stringify({ 
+            error: '服务器内部错误',
+            message: err.message,
+            stack: err.stack,
+          }));
         }
       });
-      
-      // 处理 OPTIONS 预检请求
-      devServer.app.options('/webdav-proxy/*', (req, res) => {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PROPFIND, MKCOL, COPY, MOVE');
-        res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Depth, Content-Length, Overwrite, Destination');
-        res.setHeader('Access-Control-Max-Age', '86400');
-        res.status(204).end();
-      });
-      
-      return middlewares;
-    },
-  },
-  configureWebpack: {
-    resolve: {
-      fallback: {
-        fs: false,
-        path: false,
-        crypto: false,
-      },
-    },
-    externals: {
-      electron: 'commonjs electron',
-    },
-  },
-  pluginOptions: {
-    electronBuilder: {
-      nodeIntegration: true,
-      customFileProtocol: './',
-      builderOptions: {
-        appId: "weektodo-app.netlify.app",
-        productName: "WeekToDo",
-        publish: ["github"],
-        linux: {
-          category: "Utility",
-          description: "Free and Open Source Minimalist Weekly Planner and To Do list App focused on privacy.",
-          target: ["deb", "rpm", "pacman","AppImage"],
-          icon: "build/icon.icns",
-        },
-        win: {
-          target: ["nsis"],
-        },
-        mac: {
-          category: "public.app-category.productivity",
-          target: ["dmg", "pkg"],
-        },
-      },
-    },
-  }
-};

@@ -289,7 +289,7 @@ export default {
     },
     deleteOldRepeatingEvents: function () {
       for (const event of Object.entries(this.$store.getters.repeatingEventList)) {
-        if (moment(event[1].end_date).isBefore(moment())) {
+        if (moment(event[1].end_date).isBefore(moment().toISOString())) {
           repeatingEventRepository.remove(event[0]);
           this.$store.commit("removeRepeatingEvent", event[0]);
         }
