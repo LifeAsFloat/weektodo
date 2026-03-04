@@ -1,6 +1,6 @@
 # 多阶段构建 - 生产环境
 # 第一阶段：构建应用
-FROM node:25-alpine as build-stage
+FROM node:25-alpine AS build-stage
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY . .
 RUN npx vue-cli-service build
 
 # 第二阶段：运行应用（Nginx + Node.js 代理服务器）
-FROM node:25-alpine as production-stage
+FROM node:25-alpine AS production-stage
 
 # 安装 nginx
 RUN apk add --no-cache nginx
